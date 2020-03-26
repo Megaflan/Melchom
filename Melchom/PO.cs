@@ -38,6 +38,8 @@ namespace Merchanter
                     }
                     toPO = lpack[lpack.Length - 1];
                 }
+                if (toPO == "")
+                    toPO = "<empty>";
                 poYarhl.Add(new PoEntry(toPO.Replace("<BR>", "\n")) { Context = lcontext });
             }
         }
@@ -54,8 +56,8 @@ namespace Merchanter
             List<string> textList = new List<string>();
                 
             foreach (var p in poInstance.Entries)
-            {
-                textList.Add(p.Context + dic.Transform(p.Text, "dicHW2FW"));
+            {                
+                textList.Add(p.Context + dic.Transform(p.Text.Replace("<empty>", ""), "dicHW2FW"));
             }
             File.WriteAllLines(poFile + Path.GetFileNameWithoutExtension(poFile) + ".txt", textList.ToArray());            
         }
