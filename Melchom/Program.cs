@@ -21,6 +21,9 @@ namespace Merchanter
                     case ".txt":
                         txt.Initialize(args[0]);
                         break;
+                    case ".ivt":
+                        txt.Initialize(args[0]);
+                        break;
                     case ".po":
                         po.POImport(args[0]);
                         break;
