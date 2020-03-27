@@ -18,14 +18,11 @@ namespace Merchanter
             {
                 switch (Path.GetExtension(args[0]).ToLower())
                 {
-                    case ".txt":
-                        txt.Initialize(args[0]);
-                        break;
                     case ".ivt":
                         txt.Initialize(args[0]);
                         break;
                     case ".po":
-                        po.POImport(args[0]);
+                        po.POImport(args[0], args[1]);
                         break;
                 }
             }

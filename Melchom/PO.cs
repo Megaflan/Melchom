@@ -26,22 +26,11 @@ namespace Merchanter
 
         public void POExport(string toPO)
         {
-            if (toPO != "")
+            var text = toPO.Split(':');
+            poYarhl.Add(new PoEntry(text[3].Replace("<BR>", "\n"))
             {
-                var lcontext = "";
-                if (toPO.Contains(":"))
-                {
-                    var lpack = toPO.Split(':');                    
-                    for (int i = 0; i < lpack.Length - 1; i++)
-                    {
-                        lcontext += lpack[i] + ":";
-                    }
-                    toPO = lpack[lpack.Length - 1];
-                }
-                if (toPO == "")
-                    toPO = "<empty>";
-                poYarhl.Add(new PoEntry(toPO.Replace("<BR>", "\n")) { Context = lcontext });
-            }
+                Context = text[0] + ":" + text[1] + ":" + text[2] + ":"
+            });
         }
 
         public void POWrite(string file)
@@ -50,16 +39,17 @@ namespace Merchanter
         }
 
 
-        public void POImport(string poFile)
+        public void POImport(string poFile, string outFile)
         {
             var poInstance = new BinaryFormat(new DataStream(poFile, FileOpenMode.Read)).ConvertTo<Po>();
-            List<string> textList = new List<string>();
-                
+
+            var o = File.ReadAllLines(outFile, SJIS);
             foreach (var p in poInstance.Entries)
-            {                
-                textList.Add(p.Context + dic.Transform(p.Text.Replace("<empty>", ""), "dicHW2FW"));
+            {
+                var con = p.Context.Split(',');
+                o[Convert.ToInt32(con[0])] = con[1] + dic.Transform(p.Text.Replace("\n", "<BR>"), "dicHW2FW");
             }
-            File.WriteAllLines(poFile + Path.GetFileNameWithoutExtension(poFile) + ".txt", textList.ToArray());            
+            File.WriteAllLines(outFile, o, SJIS);            
         }
     }
 }
